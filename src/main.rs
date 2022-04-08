@@ -2,7 +2,7 @@ use core::{mem::zeroed, ptr::null};
 
 use windows_sys::Win32::System::Diagnostics::Debug::MessageBeep;
 use windows_sys::{
-    Win32::Foundation::*, Win32::System::LibraryLoader::GetModuleHandleW,
+    Win32::Foundation::*, Win32::System::LibraryLoader::GetModuleHandleW, Win32::UI::HiDpi::*,
     Win32::UI::WindowsAndMessaging::*,
 };
 
@@ -25,6 +25,7 @@ macro_rules! wide_str {
 
 fn main() {
     unsafe {
+        SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
         let hinst = GetModuleHandleW(null());
         let window_class = "window";
         let window_name = "My window";
@@ -73,8 +74,8 @@ unsafe extern "system" fn window_procedure(
                 FILE_MENU_EXIT => DestroyWindow(hwnd),
                 FILE_MENU_NEW => MessageBeep(MB_ICONINFORMATION),
                 CHANGE_TITLE => {
-                    let mut text: [u16; 100] = [0; 100];
-                    GetWindowTextW(H_EDIT, text.as_mut_ptr(), 100);
+                    let mut text: [u16; 100] = [0; 100]; // max array length should be limited to i32::MAX
+                    GetWindowTextW(H_EDIT, text.as_mut_ptr(), text.len() as i32);
                     SetWindowTextW(hwnd, text.as_ptr())
                 }
                 _ => 0,
@@ -128,12 +129,7 @@ unsafe fn add_controls(hwnd: HWND) {
         0,
         wide_str!("Edit"),
         wide_str!("..."),
-        WS_VISIBLE
-            | WS_CHILD
-            | WS_BORDER
-            | ES_MULTILINE as u32
-            | ES_AUTOVSCROLL as u32
-            | ES_AUTOHSCROLL as u32,
+        WS_VISIBLE | WS_CHILD | WS_BORDER | (ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL) as u32,
         200,
         152,
         100,

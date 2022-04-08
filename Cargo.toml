@@ -12,5 +12,6 @@ features = [
   "Win32_System_LibraryLoader",
   "Win32_UI_WindowsAndMessaging",
   "Win32_System_Diagnostics_Debug",
+  "Win32_UI_HiDpi",
 ]
 version = "0.35.0"
