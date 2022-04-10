@@ -1,3 +1,5 @@
+#![windows_subsystem = "windows"] // This line hides the terminal behind the app
+
 use core::{mem::zeroed, ptr::null};
 
 use windows_sys::Win32::Graphics::Gdi::HBITMAP;
