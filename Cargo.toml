@@ -15,4 +15,4 @@ features = [
   "Win32_UI_HiDpi",
   "Win32_UI_Input_KeyboardAndMouse",
 ]
-version = "0.35.0"
+version = "0.36.0"
